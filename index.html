@@ -33,7 +33,6 @@
       font-size: 1rem;
     }
 
-    /* Categorías fijas */
     .categories {
       position: sticky;
       top: 0;
@@ -139,75 +138,102 @@
   </style>
 </head>
 <body>
-<header>
-  <h1>Fer's Boutique</h1>
-  <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
-</header>
+  <header>
+    <h1>Fer's Boutique</h1>
+    <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
+  </header>
 
-<!-- Botones de Categoría -->
-<div class="categories">
-  <button class="category-btn" onclick="mostrarCategoria('Perfumes')">Perfumes</button>
-  <button class="category-btn" onclick="mostrarCategoria('Maquillaje')">Maquillaje</button>
-  <button class="category-btn" onclick="mostrarCategoria('Accesorios')">Accesorios</button>
-  <button class="category-btn" onclick="mostrarCategoria('Varios')">Varios</button>
-  <button class="category-btn" onclick="mostrarCategoria()">Todo</button>
-</div>
+  <!-- Botones de Categoría -->
+  <div class="categories">
+    <button class="category-btn" onclick="mostrarCategoria('Perfumes')">Perfumes</button>
+    <button class="category-btn" onclick="mostrarCategoria('Maquillaje')">Maquillaje</button>
+    <button class="category-btn" onclick="mostrarCategoria('Accesorios')">Accesorios</button>
+    <button class="category-btn" onclick="mostrarCategoria('Varios')">Varios</button>
+    <button class="category-btn" onclick="mostrarCategoria()">Todo</button>
+  </div>
 
-<section class="catalogo" id="catalogo"></section>
+  <section class="catalogo" id="catalogo"></section>
 
-<footer>
-  © 2025 Fer's Boutique | Solo para consulta
-</footer>
+  <footer>
+    © 2025 Fer's Boutique | Solo para consulta
+  </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-<script>
-  let todosProductos = [];
+  <script>
+    let todosProductos = [];
 
-  async function cargarCatalogo() {
-    const catalogo = document.getElementById("catalogo");
-    const url = "https://docs.google.com/spreadsheets/d/1c6On-kjY1NmrRpssy-mI_4ywDbwrq0JKEm8SPW6dXTo/gviz/tq?tqx=out:csv";
+    async function cargarCatalogo() {
+      const catalogo = document.getElementById("catalogo");
+      const url = "https://docs.google.com/spreadsheets/d/1c6On-kjY1NmrRpssy-mI_4ywDbwrq0JKEm8SPW6dXTo/gviz/tq?tqx=out:csv";
 
-    try {
-      const resp = await fetch(url);
-      const text = await resp.text();
+      try {
+        const resp = await fetch(url);
+        const text = await resp.text();
 
-      Papa.parse(text, {
-        header: true,
-        skipEmptyLines: true,
-        complete: function(results) {
-          todosProductos = results.data;
-          mostrarCategoria(); // Mostrar todos los productos inicialmente
-        }
-      });
-    } catch (e) {
-      catalogo.innerHTML = "<p style='padding:1rem;'>No se pudo cargar el catálogo. Asegúrate de que la hoja esté compartida públicamente.</p>";
+        Papa.parse(text, {
+          header: true,
+          skipEmptyLines: true,
+          complete: function(results) {
+            todosProductos = results.data;
+            console.log("Productos cargados:", todosProductos);
+            if (!todosProductos.length) {
+              catalogo.innerHTML = "<p style='padding:1rem;'>No hay productos disponibles.</p>";
+            } else {
+              mostrarCategoria();
+            }
+          },
+          error: function(err) {
+            console.error("Error al parsear el CSV:", err);
+            catalogo.innerHTML = "<p style='padding:1rem;'>Error al leer los datos del catálogo.</p>";
+          }
+        });
+      } catch (e) {
+        console.error("Error al cargar la hoja:", e);
+        catalogo.innerHTML = "<p style='padding:1rem;'>No se pudo cargar el catálogo. Verifica el enlace y que esté publicado.</p>";
+      }
     }
-  }
 
-  function mostrarCategoria(categoria = '') {
-    const catalogo = document.getElementById("catalogo");
-    catalogo.innerHTML = '';
+    function mostrarCategoria(categoria = '') {
+      const catalogo = document.getElementById("catalogo");
+      catalogo.innerHTML = '';
 
-    const productosFiltrados = categoria
-      ? todosProductos.filter(p => p.Categoría?.trim() === categoria)
-      : todosProductos;
+      const productosFiltrados = categoria
+        ? todosProductos.filter(p => p.Categoría?.trim() === categoria)
+        : todosProductos;
 
-    productosFiltrados.forEach(row => {
-      const nombre = row.Nombre?.trim();
-      const imagen = row['Imagen (URL)']?.trim();
-      const precio = row.Precio?.trim();
-      const estado = row.Estado?.trim().toLowerCase();
+      if (!productosFiltrados.length) {
+        catalogo.innerHTML = "<p style='padding:1rem;'>No hay productos en esta categoría.</p>";
+        return;
+      }
 
-      if (!nombre || !precio) return;
+      productosFiltrados.forEach(row => {
+        const nombre = row.Nombre?.trim();
+        const imagen = row['Imagen (URL)']?.trim();
+        const precio = row.Precio?.trim();
+        const estado = row.Estado?.trim().toLowerCase();
 
-      const imageURL = (imagen && imagen.startsWith('http'))
-        ? imagen
-        : 'https://i.imgur.com/Mx7ejs7.png';
+        if (!nombre || !precio) return;
 
-      const item = document.createElement("div");
-      item.className = "item" + (estado === "agotado" ? " agotado" : "");
-      item.innerHTML = `
-        ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
-        <img src="${imageURL}" alt="${nombre}">
-        <div class="inf
+        const imageURL = (imagen && imagen.startsWith('http'))
+          ? imagen
+          : 'https://i.imgur.com/Mx7ejs7.png';
+
+        const item = document.createElement("div");
+        item.className = "item" + (estado === "agotado" ? " agotado" : "");
+        item.innerHTML = `
+          ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
+          <img src="${imageURL}" alt="${nombre}">
+          <div class="info">
+            <h3>${nombre}</h3>
+            <p>${precio}</p>
+          </div>
+        `;
+        catalogo.appendChild(item);
+      });
+    }
+
+    cargarCatalogo();
+  </script>
+</body>
+</html>
