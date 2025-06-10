@@ -91,7 +91,7 @@
 
           results.data.forEach(row => {
             const nombre = row.Nombre?.trim();
-            const imagen = row.Imagen?.trim();
+            const imagen = row['Imagen (URL)']?.trim();
             const precio = row.Precio?.trim();
             const estado = row.Estado?.trim().toLowerCase();
             const categoria = row.Categoría?.trim();
@@ -99,10 +99,10 @@
             // Depuración: Verificar cada producto antes de agregarlo
             console.log("Producto:", nombre, imagen, precio, estado, categoria);
 
-            if (!nombre || !imagen) return;
+            if (!nombre || !precio) return;
 
-            // Asegurémonos de que el enlace de Imgur esté bien formateado
-            let imageURL = imagen.startsWith('http') ? imagen : `https://i.imgur.com/${imagen}.jpg`;
+            // Si la URL de la imagen está vacía, usamos una imagen por defecto
+            let imageURL = imagen ? (imagen.startsWith('http') ? imagen : `https://i.imgur.com/${imagen}.jpg`) : 'https://via.placeholder.com/220x220?text=Imagen+no+disponible';
 
             // Verifica si la URL de la imagen es válida
             const img = new Image();
