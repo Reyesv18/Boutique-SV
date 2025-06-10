@@ -94,11 +94,14 @@
 
             if (!nombre || !imagen) return;
 
+            // Asegurémonos de que el enlace de Imgur esté bien formateado
+            const imageURL = imagen.startsWith('http') ? imagen : `https://i.imgur.com/${imagen}.jpg`;
+
             const item = document.createElement("div");
             item.className = "item" + (estado === "agotado" ? " agotado" : "");
             item.innerHTML = `
               ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
-              <img src="${imagen}" alt="${nombre}">
+              <img src="${imageURL}" alt="${nombre}">
               <div class="info">
                 <h3>${nombre}</h3>
                 <p>${precio}</p>
