@@ -69,7 +69,6 @@
   © 2025 Fer's Boutique | Solo para consulta
 </footer>
 
-<!-- PapaParse para leer CSV correctamente -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <script>
@@ -103,18 +102,26 @@
             if (!nombre || !imagen) return;
 
             // Asegurémonos de que el enlace de Imgur esté bien formateado
-            const imageURL = imagen.startsWith('http') ? imagen : `https://i.imgur.com/${imagen}.jpg`;
+            let imageURL = imagen.startsWith('http') ? imagen : `https://i.imgur.com/${imagen}.jpg`;
 
-            const item = document.createElement("div");
-            item.className = "item" + (estado === "agotado" ? " agotado" : "");
-            item.innerHTML = `
-              ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
-              <img src="${imageURL}" alt="${nombre}">
-              <div class="info">
-                <h3>${nombre}</h3>
-                <p>${precio}</p>
-              </div>`;
-            catalogo.appendChild(item);
+            // Verifica si la URL de la imagen es válida
+            const img = new Image();
+            img.onload = function() {
+              const item = document.createElement("div");
+              item.className = "item" + (estado === "agotado" ? " agotado" : "");
+              item.innerHTML = `
+                ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
+                <img src="${imageURL}" alt="${nombre}">
+                <div class="info">
+                  <h3>${nombre}</h3>
+                  <p>${precio}</p>
+                </div>`;
+              catalogo.appendChild(item);
+            };
+            img.onerror = function() {
+              console.error("Error al cargar la imagen:", imageURL);
+            };
+            img.src = imageURL;
           });
         }
       });
