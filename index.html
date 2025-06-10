@@ -121,6 +121,7 @@
         }
       });
     } catch (e) {
+      console.error("Error al cargar el catálogo:", e);  // Agregar detalles del error
       catalogo.innerHTML = "<p style='padding:1rem;'>No se pudo cargar el catálogo. Asegúrate de que la hoja esté compartida públicamente.</p>";
     }
   }
