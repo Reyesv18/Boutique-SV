@@ -81,16 +81,24 @@
       const resp = await fetch(url);
       const text = await resp.text();
 
+      // Depuración: Verifica qué datos se están recibiendo
+      console.log("Datos CSV recibidos:", text);
+
       Papa.parse(text, {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
+          console.log("Datos procesados por PapaParse:", results.data);
+
           results.data.forEach(row => {
             const nombre = row.Nombre?.trim();
             const imagen = row.Imagen?.trim();
             const precio = row.Precio?.trim();
             const estado = row.Estado?.trim().toLowerCase();
             const categoria = row.Categoría?.trim();
+
+            // Depuración: Verificar cada producto antes de agregarlo
+            console.log("Producto:", nombre, imagen, precio, estado, categoria);
 
             if (!nombre || !imagen) return;
 
