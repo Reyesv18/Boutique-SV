@@ -118,6 +118,20 @@
       border-bottom-right-radius: 8px;
     }
 
+    .galeria {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+
+    .galeria img {
+      max-width: 100%;
+      height: auto;
+      scroll-snap-align: start;
+      margin-right: 8px;
+      border-radius: 4px;
+    }
+
     footer {
       text-align: center;
       padding: 1rem;
@@ -209,21 +223,23 @@
 
       productosFiltrados.forEach(row => {
         const nombre = row.Nombre?.trim();
-        const imagen = row['Imagen (URL)']?.trim();
+        const imagenes = row['Imagen (URL)']?.trim();
         const precio = row.Precio?.trim();
-        const estado = row.Estado?.trim().toLowerCase();
+        const estado = row.Estado?.trim()?.toLowerCase();
 
         if (!nombre || !precio) return;
 
-        const imageURL = (imagen && imagen.startsWith('http'))
-          ? imagen
-          : 'https://i.imgur.com/Mx7ejs7.png';
+        // Procesar múltiples imágenes separadas por coma
+        const listaImagenes = imagenes ? imagenes.split(',').map(url => url.trim()).filter(url => url.startsWith("http")) : ['https://i.imgur.com/Mx7ejs7.png'];
+
+        // Crear la galería
+        const galeriaHTML = listaImagenes.map(url => `<img src="${url}" alt="${nombre}">`).join('');
 
         const item = document.createElement("div");
         item.className = "item" + (estado === "agotado" ? " agotado" : "");
         item.innerHTML = `
           ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
-          <img src="${imageURL}" alt="${nombre}">
+          <div class="galeria">${galeriaHTML}</div>
           <div class="info">
             <h3>${nombre}</h3>
             <p>${precio}</p>
