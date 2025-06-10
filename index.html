@@ -79,14 +79,11 @@
     filas.forEach(fila => {
       const [nombre, imagen, precio, estado, categoria] = fila.split(",");
       if (!nombre) return;
-
-      // Si no hay imagen, usa una predeterminada
-      const imagenFinal = imagen.trim() !== "" ? imagen.trim() : "https://i.imgur.com/Mx7ejs7.png"; 
-
+      const imagenFinal = imagen.trim() !== "" ? imagen.trim() : "https://i.imgur.com/Mx7ejs7.png"; // Aquí va la imagen predeterminada
       const item = document.createElement("div");
-      item.className = "item" + (estado.trim().toLowerCase()==="agotado" ? " agotado" : "");
+      item.className = "item" + (estado.trim().toLowerCase() === "agotado" ? " agotado" : "");
       item.innerHTML = `
-        ${estado.trim().toLowerCase()==="agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
+        ${estado.trim().toLowerCase() === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
         <img src="${imagenFinal}" alt="${nombre.trim()}">
         <div class="info">
           <h3>${nombre.trim()}</h3>
