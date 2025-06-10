@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Fer's Boutique</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #ffeff4;
+    }
+    header {
+      background: #f8bbd0;
+      padding: 1rem;
+      text-align: center;
+      color: #880e4f;
+    }
+    h1 { margin: 0; font-size: 2rem; }
+    p.subtitle { margin: 0.2rem 0 0.5rem; }
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .item {
+      border: 1px solid #f0c4d1;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .item.agotado { opacity: 0.6; }
+    .item img { width: 100%; height: auto; }
+    .info { padding: 0.5rem; }
+    .info h3 { margin: 0.3rem 0; font-size: 1.1rem; color: #4a148c; }
+    .info p { margin: 0; color: #666; }
+    .agotado-label {
+      position: absolute;
+      top: 0; left: 0;
+      background: #c2185b;
+      color: white;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-bottom-right-radius: 8px;
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #f8bbd0;
+      font-size: 0.9rem;
+      color: #880e4f;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Fer's Boutique</h1>
+  <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
+</header>
+
+<section class="catalogo" id="catalogo"></section>
+
+<footer>
+  © 2025 Fer's Boutique | Solo para consulta
+</footer>
+
+<script>
+  async function cargarCatalogo() {
+    const catalogo = document.getElementById("catalogo");
+    const url = "https://docs.google.com/spreadsheets/d/1c6On-kjY1NmrRpssy-mI_4ywDbwrq0JKEm8SPW6dXTo/gviz/tq?tqx=out:csv";
+    const resp = await fetch(url);
+    const text = await resp.text();
+    const filas = text.split("\n").slice(1);
+    filas.forEach(fila => {
+      const [nombre, imagen, precio, estado, categoria] = fila.split(",");
+      if (!nombre) return;
+      const item = document.createElement("div");
+      item.className = "item" + (estado.trim().toLowerCase()==="agotado" ? " agotado" : "");
+      item.innerHTML = `
+        ${estado.trim().toLowerCase()==="agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
+        <img src="${imagen.trim()}" alt="${nombre.trim()}">
+        <div class="info">
+          <h3>${nombre.trim()}</h3>
+          <p>${precio.trim()}</p>
+        </div>`;
+      catalogo.appendChild(item);
+    });
+  }
+  cargarCatalogo();
+</script>
+</body>
+</html>
