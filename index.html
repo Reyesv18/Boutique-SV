@@ -19,6 +19,29 @@
     }
     h1 { margin: 0; font-size: 2rem; }
     p.subtitle { margin: 0.2rem 0 0.5rem; }
+
+    /* Estilo de los botones de categorías */
+    .categories {
+      display: flex;
+      justify-content: center;
+      background: #fff;
+      padding: 1rem 0;
+      border-top: 1px solid #f0c4d1;
+    }
+    .category-btn {
+      padding: 10px 20px;
+      margin: 0 5px;
+      background-color: #880e4f;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .category-btn:hover {
+      background-color: #4a148c;
+    }
+
     .catalogo {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -63,6 +86,15 @@
   <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
 </header>
 
+<!-- Botones de Categoría -->
+<div class="categories">
+  <button class="category-btn" onclick="mostrarCategoria('Perfumes')">Perfumes</button>
+  <button class="category-btn" onclick="mostrarCategoria('Maquillaje')">Maquillaje</button>
+  <button class="category-btn" onclick="mostrarCategoria('Accesorios')">Accesorios</button>
+  <button class="category-btn" onclick="mostrarCategoria('Varios')">Varios</button>
+  <button class="category-btn" onclick="mostrarCategoria()">Mostrar Todo</button>
+</div>
+
 <section class="catalogo" id="catalogo"></section>
 
 <footer>
@@ -72,6 +104,8 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <script>
+  let todosProductos = [];
+
   async function cargarCatalogo() {
     const catalogo = document.getElementById("catalogo");
     const url = "https://docs.google.com/spreadsheets/d/1c6On-kjY1NmrRpssy-mI_4ywDbwrq0JKEm8SPW6dXTo/gviz/tq?tqx=out:csv";
@@ -88,42 +122,54 @@
         skipEmptyLines: true,
         complete: function(results) {
           console.log("Datos procesados por PapaParse:", results.data);
+          todosProductos = results.data; // Guardar todos los productos
 
-          results.data.forEach(row => {
-            const nombre = row.Nombre?.trim();
-            const imagen = row['Imagen (URL)']?.trim();
-            const precio = row.Precio?.trim();
-            const estado = row.Estado?.trim().toLowerCase();
-            const categoria = row.Categoría?.trim();
-
-            // Depuración: Verificar cada producto antes de agregarlo
-            console.log("Producto:", nombre, imagen, precio, estado, categoria);
-
-            if (!nombre || !precio) return;
-
-            // Si la URL de la imagen está vacía, usamos una imagen por defecto
-            let imageURL = (imagen && imagen.startsWith('http')) 
-                ? imagen 
-                : 'https://i.imgur.com/Mx7ejs7.png';
-
-            // Crear el item
-            const item = document.createElement("div");
-            item.className = "item" + (estado === "agotado" ? " agotado" : "");
-            item.innerHTML = `
-              ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
-              <img src="${imageURL}" alt="${nombre}">
-              <div class="info">
-                <h3>${nombre}</h3>
-                <p>${precio}</p>
-              </div>`;
-            catalogo.appendChild(item);
-          });
+          mostrarCategoria(); // Mostrar todos los productos inicialmente
         }
       });
     } catch (e) {
-      console.error("Error al cargar el catálogo:", e);  // Agregar detalles del error
       catalogo.innerHTML = "<p style='padding:1rem;'>No se pudo cargar el catálogo. Asegúrate de que la hoja esté compartida públicamente.</p>";
     }
+  }
+
+  // Función para mostrar productos por categoría
+  function mostrarCategoria(categoria = '') {
+    const catalogo = document.getElementById("catalogo");
+    catalogo.innerHTML = ''; // Limpiar el catálogo antes de mostrar
+
+    // Filtrar los productos si se especifica una categoría
+    const productosFiltrados = categoria ? todosProductos.filter(p => p.Categoría?.trim() === categoria) : todosProductos;
+
+    // Crear y mostrar los productos filtrados
+    productosFiltrados.forEach(row => {
+      const nombre = row.Nombre?.trim();
+      const imagen = row['Imagen (URL)']?.trim();
+      const precio = row.Precio?.trim();
+      const estado = row.Estado?.trim().toLowerCase();
+      const categoria = row.Categoría?.trim();
+
+      // Depuración: Verificar cada producto antes de agregarlo
+      console.log("Producto:", nombre, imagen, precio, estado, categoria);
+
+      if (!nombre || !precio) return;
+
+      // Si la URL de la imagen está vacía, usamos una imagen por defecto
+      let imageURL = (imagen && imagen.startsWith('http')) 
+          ? imagen 
+          : 'https://i.imgur.com/Mx7ejs7.png';
+
+      // Crear el item
+      const item = document.createElement("div");
+      item.className = "item" + (estado === "agotado" ? " agotado" : "");
+      item.innerHTML = `
+        ${estado === "agotado" ? '<div class="agotado-label">Agotado</div>' : ''}
+        <img src="${imageURL}" alt="${nombre}">
+        <div class="info">
+          <h3>${nombre}</h3>
+          <p>${precio}</p>
+        </div>`;
+      catalogo.appendChild(item);
+    });
   }
 
   cargarCatalogo();
