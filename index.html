@@ -49,26 +49,6 @@
       -webkit-overflow-scrolling: touch;
     }
 
-    .categories::after {
-      content: "→";
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.2rem;
-      color: #880e4f;
-      background: white;
-      padding-left: 0.5rem;
-      display: none;
-      pointer-events: none;
-    }
-
-    @media (max-width: 768px) {
-      .categories.mostrar-flecha::after {
-        display: block;
-      }
-    }
-
     .category-btn {
       flex: 0 0 auto;
       padding: 10px 16px;
@@ -273,22 +253,6 @@
     }
 
     cargarCatalogo();
-
-    // Mostrar flecha si hay más botones
-    const categorias = document.getElementById("categorias");
-
-    function actualizarFlechaIndicadora() {
-      const scrollLeft = categorias.scrollLeft;
-      const scrollWidth = categorias.scrollWidth;
-      const clientWidth = categorias.clientWidth;
-      const flechaVisible = scrollLeft + clientWidth < scrollWidth - 5;
-
-      categorias.classList.toggle("mostrar-flecha", flechaVisible);
-    }
-
-    window.addEventListener("load", actualizarFlechaIndicadora);
-    categorias.addEventListener("scroll", actualizarFlechaIndicadora);
-    window.addEventListener("resize", actualizarFlechaIndicadora);
   </script>
 </body>
 </html>
