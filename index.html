@@ -38,25 +38,48 @@
       top: 0;
       z-index: 1000;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 0.5rem;
       background: #fff;
       padding: 0.5rem;
       border-top: 1px solid #f0c4d1;
       box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .categories::after {
+      content: "→";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+      color: #880e4f;
+      background: white;
+      padding-left: 0.5rem;
+      display: none;
+      pointer-events: none;
+    }
+
+    @media (max-width: 768px) {
+      .categories.mostrar-flecha::after {
+        display: block;
+      }
     }
 
     .category-btn {
+      flex: 0 0 auto;
       padding: 10px 16px;
-      margin: 4px;
       background-color: #880e4f;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.9rem;
-      flex: 1 0 auto;
-      max-width: 140px;
+      scroll-snap-align: start;
+      white-space: nowrap;
     }
 
     .category-btn:hover {
@@ -158,7 +181,7 @@
   </header>
 
   <!-- Botones de Categoría -->
-  <div class="categories">
+  <div class="categories" id="categorias">
     <button class="category-btn" onclick="mostrarCategoria('Perfumes')">Perfumes</button>
     <button class="category-btn" onclick="mostrarCategoria('Maquillaje')">Maquillaje</button>
     <button class="category-btn" onclick="mostrarCategoria('Accesorios')">Accesorios</button>
@@ -231,10 +254,8 @@
 
         if (!nombre || !precio) return;
 
-        // Procesar múltiples imágenes separadas por coma
         const listaImagenes = imagenes ? imagenes.split(',').map(url => url.trim()).filter(url => url.startsWith("http")) : ['https://i.imgur.com/Mx7ejs7.png'];
 
-        // Crear la galería
         const galeriaHTML = listaImagenes.map(url => `<img src="${url}" alt="${nombre}">`).join('');
 
         const item = document.createElement("div");
@@ -252,6 +273,22 @@
     }
 
     cargarCatalogo();
+
+    // Mostrar flecha si hay más botones
+    const categorias = document.getElementById("categorias");
+
+    function actualizarFlechaIndicadora() {
+      const scrollLeft = categorias.scrollLeft;
+      const scrollWidth = categorias.scrollWidth;
+      const clientWidth = categorias.clientWidth;
+      const flechaVisible = scrollLeft + clientWidth < scrollWidth - 5;
+
+      categorias.classList.toggle("mostrar-flecha", flechaVisible);
+    }
+
+    window.addEventListener("load", actualizarFlechaIndicadora);
+    categorias.addEventListener("scroll", actualizarFlechaIndicadora);
+    window.addEventListener("resize", actualizarFlechaIndicadora);
   </script>
 </body>
 </html>
