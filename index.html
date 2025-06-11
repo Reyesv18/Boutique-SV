@@ -52,18 +52,39 @@
     .category-btn {
       flex: 0 0 auto;
       padding: 10px 16px;
-      background-color: #880e4f;
+      background: linear-gradient(135deg, #ec407a, #ab47bc);
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 20px;
       cursor: pointer;
-      font-size: 0.9rem;
-      scroll-snap-align: start;
+      font-size: 0.95rem;
+      font-weight: bold;
       white-space: nowrap;
+      scroll-snap-align: start;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
     }
 
-    .category-btn:hover {
-      background-color: #4a148c;
+    .category-btn:hover,
+    .category-btn:focus {
+      transform: scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      outline: none;
+    }
+
+    .category-btn.active {
+      background: linear-gradient(135deg, #d81b60, #6a1b9a);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+      .category-btn {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+      }
     }
 
     .catalogo {
@@ -142,16 +163,6 @@
       font-size: 0.9rem;
       color: #880e4f;
     }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.6rem;
-      }
-      .category-btn {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-      }
-    }
   </style>
 </head>
 <body>
@@ -162,13 +173,12 @@
 
   <!-- Botones de Categoría -->
   <div class="categories" id="categorias">
-    <button class="category-btn" onclick="mostrarCategoria('Perfumes')">Perfumes</button>
-    <button class="category-btn" onclick="mostrarCategoria('Maquillaje')">Maquillaje</button>
-    <button class="category-btn" onclick="mostrarCategoria('Accesorios')">Accesorios</button>
-    <button class="category-btn" onclick="mostrarCategoria('Ropa')">Ropa</button>
-    <button class="category-btn" onclick="mostrarCategoria('Cremas')">Cremas</button>
-    <button class="category-btn" onclick="mostrarCategoria('Varios')">Varios</button>
-    <button class="category-btn" onclick="mostrarCategoria()">Todo</button>
+    <button class="category-btn" onclick="mostrarCategoria('Ropa', this)">👗 Ropa</button>
+    <button class="category-btn" onclick="mostrarCategoria('Perfumes', this)">🌸 Perfumes</button>
+    <button class="category-btn" onclick="mostrarCategoria('Maquillaje', this)">💄 Maquillaje</button>
+    <button class="category-btn" onclick="mostrarCategoria('Accesorios', this)">👜 Accesorios</button>
+    <button class="category-btn" onclick="mostrarCategoria('Varios', this)">✨ Varios</button>
+    <button class="category-btn" onclick="mostrarCategoria('', this)">📦 Todo</button>
   </div>
 
   <section class="catalogo" id="catalogo"></section>
@@ -213,8 +223,12 @@
       }
     }
 
-    function mostrarCategoria(categoria = '') {
+    function mostrarCategoria(categoria = '', boton = null) {
       const catalogo = document.getElementById("catalogo");
+      const botones = document.querySelectorAll(".category-btn");
+      botones.forEach(btn => btn.classList.remove("active"));
+      if (boton) boton.classList.add("active");
+
       catalogo.innerHTML = '';
 
       const productosFiltrados = categoria
