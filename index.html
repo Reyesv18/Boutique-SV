@@ -61,6 +61,34 @@
       color: #880e4f;
     }
 
+    .search-container {
+      display: flex;
+      justify-content: center;
+      margin: 1rem;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .search-container input[type="text"] {
+      padding: 10px 40px 10px 16px;
+      border-radius: 32px;
+      border: none;
+      width: 90%;
+      max-width: 400px;
+      background-color: #ffe3ec;
+      font-size: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      color: #6a1b9a;
+      background-image: url('https://cdn-icons-png.flaticon.com/512/622/622669.png');
+      background-position: right 12px center;
+      background-size: 24px;
+      background-repeat: no-repeat;
+    }
+
+    .search-container input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 64, 129, 0.3);
+    }
+
     .categories {
       display: flex;
       flex-wrap: nowrap;
@@ -174,6 +202,11 @@
       color: #880e4f;
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 480px) {
       h1 {
         font-size: 1.8rem;
@@ -194,6 +227,10 @@
     <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
     <div class="carrito-btn" title="Ver carrito">🛍️</div>
   </header>
+
+  <div class="search-container">
+    <input type="text" id="busqueda" placeholder="🔍 Buscar productos...">
+  </div>
 
   <div class="categories" id="categorias">
     <button class="category-btn" onclick="mostrarCategoria('Ropa')">👗 Ropa</button>
@@ -227,11 +264,7 @@
           skipEmptyLines: true,
           complete: function(results) {
             todosProductos = results.data;
-            if (!todosProductos.length) {
-              catalogo.innerHTML = "<p style='padding:1rem;'>No hay productos disponibles.</p>";
-            } else {
-              mostrarCategoria();
-            }
+            mostrarCategoria();
           },
           error: function(err) {
             console.error("Error al parsear el CSV:", err);
@@ -245,12 +278,16 @@
     }
 
     function mostrarCategoria(categoria = '') {
+      const inputBusqueda = document.getElementById("busqueda");
+      const termino = inputBusqueda?.value?.toLowerCase().trim() || "";
       const catalogo = document.getElementById("catalogo");
       catalogo.innerHTML = '';
 
-      const productosFiltrados = categoria
-        ? todosProductos.filter(p => p.Categoría?.trim() === categoria)
-        : todosProductos;
+      const productosFiltrados = todosProductos.filter(p => {
+        const coincideCategoria = categoria ? p.Categoría?.trim() === categoria : true;
+        const coincideBusqueda = p.Nombre?.toLowerCase().includes(termino);
+        return coincideCategoria && coincideBusqueda;
+      });
 
       if (!productosFiltrados.length) {
         catalogo.innerHTML = "<p style='padding:1rem;'>No hay productos en esta categoría.</p>";
@@ -282,6 +319,8 @@
         catalogo.appendChild(item);
       });
     }
+
+    document.getElementById("busqueda")?.addEventListener("input", () => mostrarCategoria());
 
     cargarCatalogo();
   </script>
