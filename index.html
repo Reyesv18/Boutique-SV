@@ -4,47 +4,70 @@
   <meta charset="UTF-8">
   <title>Elizabeth Glam</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/263/263142.png" type="image/png">
   <style>
     * {
       box-sizing: border-box;
     }
 
     body {
-      font-family: 'Arial', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
       background: #ffeff4;
     }
 
     header {
-      background: #f8bbd0;
-      padding: 1rem;
+      background: linear-gradient(135deg, #f8bbd0, #f48fb1);
+      padding: 2rem 1rem 1rem;
       text-align: center;
       color: #880e4f;
+      position: relative;
+      border-bottom: 4px solid #f48fb1;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
 
     h1 {
       margin: 0;
-      font-size: 2rem;
+      font-size: 2.4rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #6a1b9a;
     }
 
     p.subtitle {
-      margin: 0.2rem 0 0.5rem;
-      font-size: 1rem;
+      margin: 0.4rem 0 0;
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #ad1457;
+    }
+
+    .carrito-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      background: white;
+      border-radius: 50%;
+      padding: 0.4rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .carrito-btn:hover {
+      transform: scale(1.1);
+      background: #f8bbd0;
+      color: #880e4f;
     }
 
     .categories {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
       display: flex;
       flex-wrap: nowrap;
       overflow-x: auto;
       gap: 0.5rem;
-      background: #fff;
-      padding: 0.5rem;
-      border-top: 1px solid #f0c4d1;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      background: #ffeff4;
+      padding: 0.5rem 1rem;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
     }
@@ -52,39 +75,20 @@
     .category-btn {
       flex: 0 0 auto;
       padding: 10px 16px;
-      background: linear-gradient(135deg, #ec407a, #ab47bc);
+      background-color: #880e4f;
       color: white;
       border: none;
-      border-radius: 20px;
+      border-radius: 24px;
       cursor: pointer;
-      font-size: 0.95rem;
-      font-weight: bold;
-      white-space: nowrap;
+      font-size: 0.9rem;
       scroll-snap-align: start;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      white-space: nowrap;
+      transition: background 0.3s ease, transform 0.2s ease;
     }
 
-    .category-btn:hover,
-    .category-btn:focus {
+    .category-btn:hover {
+      background-color: #ad1457;
       transform: scale(1.05);
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-      outline: none;
-    }
-
-    .category-btn.active {
-      background: linear-gradient(135deg, #d81b60, #6a1b9a);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.2);
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.6rem;
-      }
-      .category-btn {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-      }
     }
 
     .catalogo {
@@ -103,6 +107,12 @@
       position: relative;
       display: flex;
       flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .item.agotado {
@@ -163,32 +173,64 @@
       font-size: 0.9rem;
       color: #880e4f;
     }
+
+    .enlace-hoja {
+      text-align: center;
+      font-size: 0.85rem;
+      padding-bottom: 1rem;
+      color: #ad1457;
+    }
+
+    .enlace-hoja a {
+      color: #6a1b9a;
+      text-decoration: none;
+    }
+
+    .enlace-hoja a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.8rem;
+      }
+      .category-btn {
+        font-size: 0.85rem;
+        padding: 8px 12px;
+      }
+      .carrito-btn {
+        font-size: 1.3rem;
+      }
+    }
   </style>
 </head>
 <body>
   <header>
     <h1>Elizabeth Glam</h1>
     <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
+    <div class="carrito-btn" title="Ver carrito">🛍️</div>
   </header>
 
-  <!-- Botones de Categoría -->
   <div class="categories" id="categorias">
-    <button class="category-btn" onclick="mostrarCategoria('Ropa', this)">👗 Ropa</button>
-    <button class="category-btn" onclick="mostrarCategoria('Perfumes', this)">🌸 Perfumes</button>
-    <button class="category-btn" onclick="mostrarCategoria('Maquillaje', this)">💄 Maquillaje</button>
-    <button class="category-btn" onclick="mostrarCategoria('Accesorios', this)">👜 Accesorios</button>
-    <button class="category-btn" onclick="mostrarCategoria('Varios', this)">✨ Varios</button>
-    <button class="category-btn" onclick="mostrarCategoria('', this)">📦 Todo</button>
+    <button class="category-btn" onclick="mostrarCategoria('Ropa')">👗 Ropa</button>
+    <button class="category-btn" onclick="mostrarCategoria('Perfumes')">🌸 Perfumes</button>
+    <button class="category-btn" onclick="mostrarCategoria('Maquillaje')">💄 Maquillaje</button>
+    <button class="category-btn" onclick="mostrarCategoria('Accesorios')">👜 Accesorios</button>
+    <button class="category-btn" onclick="mostrarCategoria('Varios')">✨ Varios</button>
+    <button class="category-btn" onclick="mostrarCategoria()">📦 Todo</button>
   </div>
 
   <section class="catalogo" id="catalogo"></section>
+
+  <div class="enlace-hoja">
+    <p>Actualizar productos desde <a href="https://docs.google.com/spreadsheets/d/1n_PnVigPcZKM5iGdEvD7WWkZYkx7HDC0fjWbJ-vREU0/edit?usp=sharing" target="_blank" rel="noopener">Google Sheets</a></p>
+  </div>
 
   <footer>
     © 2025 Elizabeth Glam | Solo para consulta
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
   <script>
     let todosProductos = [];
 
@@ -205,7 +247,6 @@
           skipEmptyLines: true,
           complete: function(results) {
             todosProductos = results.data;
-            console.log("Productos cargados:", todosProductos);
             if (!todosProductos.length) {
               catalogo.innerHTML = "<p style='padding:1rem;'>No hay productos disponibles.</p>";
             } else {
@@ -223,12 +264,8 @@
       }
     }
 
-    function mostrarCategoria(categoria = '', boton = null) {
+    function mostrarCategoria(categoria = '') {
       const catalogo = document.getElementById("catalogo");
-      const botones = document.querySelectorAll(".category-btn");
-      botones.forEach(btn => btn.classList.remove("active"));
-      if (boton) boton.classList.add("active");
-
       catalogo.innerHTML = '';
 
       const productosFiltrados = categoria
