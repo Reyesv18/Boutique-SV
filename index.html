@@ -16,6 +16,12 @@
       padding: 0;
       background: #ffeff4;
       color: #880e4f;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark {
+      background: #2c2c2c;
+      color: #fff;
     }
 
     header {
@@ -26,6 +32,13 @@
       position: relative;
       border-bottom: 4px solid #f48fb1;
       box-shadow: 0 4px 10px rgb(0 0 0 / 0.1);
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark header {
+      background: #4a148c;
+      color: #fff;
+      border-bottom: 4px solid #7b1fa2;
     }
 
     header h1 {
@@ -35,11 +48,41 @@
       color: #6a1b9a;
     }
 
+    body.dark header h1 {
+      color: #fff;
+    }
+
     header p.subtitle {
       margin: 0.4rem 0 0;
       font-size: 1.1rem;
       font-style: italic;
       color: #ad1457;
+    }
+
+    body.dark header p.subtitle {
+      color: #fff;
+    }
+
+    .darkmode-button {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-size: 1.5rem;
+      background: #fff;
+      border-radius: 50%;
+      padding: 0.4rem;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
+      cursor: pointer;
+      transition: transform 0.3s ease, background 0.5s ease, color 0.5s ease;
+    }
+
+    .darkmode-button.active {
+      background: #fff200;
+      color: #fff;
+    }
+
+    .darkmode-button:hover {
+      transform: scale(1.1);
     }
 
     .carrito-btn {
@@ -99,6 +142,11 @@
       padding: 0.5rem 1rem;
       scroll-snap-type: x mandatory;
       -webkit-overflow-scrolling: touch;
+      transition: background 0.5s ease;
+    }
+
+    body.dark .categories {
+      background: #fff0ff;
     }
 
     .category-btn {
@@ -140,7 +188,12 @@
       position: relative;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark .item {
+      background: #fff0ff;
+      color: #fff;
     }
 
     .item:hover {
@@ -188,9 +241,17 @@
       color: #4a148c;
     }
 
+    body.dark .item .info h3 {
+      color: #fff;
+    }
+
     .item .info p {
       margin-bottom: 0;
       color: #666;
+    }
+
+    body.dark .item .info p {
+      color: #fff;
     }
 
     footer {
@@ -199,6 +260,12 @@
       background: #f8bbd0;
       color: #880e4f;
       font-size: 0.9rem;
+      transition: background 0.5s ease, color 0.5s ease;
+    }
+
+    body.dark footer {
+      background: #4a148c;
+      color: #fff;
     }
 
     @keyframes fadeIn {
@@ -224,6 +291,7 @@
   <header>
     <h1>Elizabeth Glam</h1>
     <p class="subtitle">Ropa • Perfumes • Maquillaje • Accesorios • Varios</p>
+    <div class="darkmode-button" id="darkmodeBtn">🌙</div>
     <div class="carrito-btn" title="Ver carrito">🛍️</div>
   </header>
 
@@ -309,7 +377,6 @@
         const listaImagenes = imagenes ? imagenes.split(',').map(url => url.trim()).filter(url => url.startsWith("http")) : ['https://i.imgur.com/Mx7ejs7.png'];
 
         const galeriaHTML = listaImagenes.map(url => `<img src="${url}" alt="${nombre}">`).join('');
-
         const item = document.createElement("div");
 
         item.className = "item" + (estado === "agotado" ? " agotado" : "");
@@ -326,6 +393,18 @@
     }
 
     document.getElementById("busqueda")?.addEventListener("input", () => mostrarCategoria());
+
+    document.getElementById("darkmodeBtn")?.addEventListener("click", function(){
+      document.body.classList.toggle("dark");
+
+      this.classList.toggle("active");
+
+      if (document.body.classList.contains("dark")) {
+        this.textContent = "☀️";
+      } else {
+        this.textContent = "🌙";
+      }
+    });
 
     cargarCatalogo();
 
