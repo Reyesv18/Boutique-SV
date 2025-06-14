@@ -220,13 +220,16 @@
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
+      align-items: center;
+      gap: 8px;
+      padding: 0.5rem;
     }
 
     .item .galeria img {
-      max-width: 100%;
-      height: auto;
+      max-height: 200px;
+      width: auto;
+      object-fit: contain;
       scroll-snap-align: start;
-      margin-right: 8px;
       border-radius: 4px;
     }
 
