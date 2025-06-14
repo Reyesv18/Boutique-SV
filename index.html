@@ -95,7 +95,7 @@
       padding: 0.4rem;
       box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
       cursor: pointer;
-      transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+      transition: transform 0.3s ease, background 0.5s ease, color 0.5s ease;
     }
 
     .carrito-btn:hover {
@@ -235,20 +235,6 @@
       cursor: zoom-in;
     }
 
-    /* Zoom en escritorio al hover */
-    .item .galeria img:hover {
-      transform: scale(1.5);
-      z-index: 1000;
-      position: relative;
-    }
-
-    /* Zoom en pantalla táctil (al tocarle) */
-    .item .galeria img:active {
-      transform: scale(1.5);
-      z-index: 1000;
-      position: relative;
-    }
-    
     .item .info {
       padding: 0.5rem;
     }
@@ -291,7 +277,6 @@
       to {opacity: 1; transform: translateY(0)}
     }
 
-    /* Adaptar para teléfonos */
     @media (max-width: 480px) {
       header h1 {
         font-size: 1.8rem;
@@ -313,6 +298,39 @@
       .item .info p {
         font-size: 0.9rem;
       }
+    }
+
+    .lightbox.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .lightbox {
+      visibility: hidden;
+     opacity: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgb(0 0 0 / 0.7);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+      transition: visibility 0s, opacity 0.5s ease;
+      cursor: zoom-out;
+    }
+
+    .lightbox img {
+      max-height: 90vh;
+      max-width: 90vw;
+      transform: scale(0);
+      transition: transform 0.5s ease;
+    }
+
+    .lightbox.active img {
+      transform: scale(1);
     }
   </style>
 </head>
@@ -346,6 +364,10 @@
   <footer>
     © 2025 Elizabeth Glam | Solo para consulta
   </footer>
+
+  <div id="lightbox" class="lightbox">
+    <img src="#" alt="Imagen ampliada">
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
@@ -417,6 +439,24 @@
             <p>${precio}</p>
           </div>
         `;
+
+        item.querySelectorAll("img").forEach(img => {
+          img.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const lightbox = document.getElementById("lightbox");
+
+            lightbox.querySelector("img").src = img.src;
+            lightbox.classList.add("active");
+
+            // Cierre del lightbox con click
+            lightbox.onclick = () => {
+              lightbox.classList.remove("active");
+
+              lightbox.querySelector("img").src = "";
+            };
+          });
+        });
+
         catalogo.appendChild(item);
       });
     }
