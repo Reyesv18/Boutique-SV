@@ -231,8 +231,24 @@
       object-fit: contain;
       scroll-snap-align: start;
       border-radius: 4px;
+      transition: transform 0.3s ease;
+      cursor: zoom-in;
     }
 
+    /* Zoom en escritorio al hover */
+    .item .galeria img:hover {
+      transform: scale(1.5);
+      z-index: 1000;
+      position: relative;
+    }
+
+    /* Zoom en pantalla táctil (al tocarle) */
+    .item .galeria img:active {
+      transform: scale(1.5);
+      z-index: 1000;
+      position: relative;
+    }
+    
     .item .info {
       padding: 0.5rem;
     }
